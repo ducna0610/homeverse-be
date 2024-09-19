@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Homeverse.UnitTest.Controllers;
+namespace Homeverse.UnitTest.Controllers.V1;
 
 public class CitiesControllerTests
 {
