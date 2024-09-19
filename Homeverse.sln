@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homeverse.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homeverse.API", "Homeverse.API\Homeverse.API.csproj", "{B8F1FF04-9336-461C-AC98-5D43F98E0798}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homeverse.Application", "Homeverse.Application\Homeverse.Application.csproj", "{EFBBC0FB-695C-427B-A8EE-9AAFB69CEC87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homeverse.UnitTest", "Homeverse.UnitTest\Homeverse.UnitTest.csproj", "{AF1669F3-7D1E-4688-AD3F-B40164CAAEBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{B8F1FF04-9336-461C-AC98-5D43F98E0798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8F1FF04-9336-461C-AC98-5D43F98E0798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8F1FF04-9336-461C-AC98-5D43F98E0798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFBBC0FB-695C-427B-A8EE-9AAFB69CEC87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFBBC0FB-695C-427B-A8EE-9AAFB69CEC87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFBBC0FB-695C-427B-A8EE-9AAFB69CEC87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFBBC0FB-695C-427B-A8EE-9AAFB69CEC87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF1669F3-7D1E-4688-AD3F-B40164CAAEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1669F3-7D1E-4688-AD3F-B40164CAAEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1669F3-7D1E-4688-AD3F-B40164CAAEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF1669F3-7D1E-4688-AD3F-B40164CAAEBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
