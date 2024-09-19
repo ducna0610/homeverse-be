@@ -14,7 +14,7 @@ namespace Homeverse.API.Controllers.V1
         private readonly ILogger<CitiesController> _logger;
         private readonly ICityService _cityService;
 
-        public CitiesController(ICityService cityService, ILogger<CitiesController> logger)
+        public CitiesController(ILogger<CitiesController> logger, ICityService cityService)
         {
             _logger = logger;
             _cityService = cityService;
@@ -30,7 +30,7 @@ namespace Homeverse.API.Controllers.V1
             {
                 var cities = await _cityService.GetCitiesAsync();
 
-                if (cities == null)
+                if (cities.Count() == 0)
                 {
                     return NotFound();
                 }
@@ -45,7 +45,6 @@ namespace Homeverse.API.Controllers.V1
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(CityResponse), StatusCodes.Status200OK)]
@@ -57,7 +56,7 @@ namespace Homeverse.API.Controllers.V1
             {
                 var city = await _cityService.GetCityByIdAsync(id);
 
-                if (city == null)
+                if (city.Id == 0)
                 {
                     return NotFound();
                 }
