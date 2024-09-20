@@ -3,6 +3,7 @@ using Homeverse.Application.DTOs.Responses;
 using Homeverse.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
+using Homeverse.Application.Interfaces;
 
 namespace Homeverse.API.Controllers.V1
 {
@@ -13,11 +14,18 @@ namespace Homeverse.API.Controllers.V1
     {
         private readonly ILogger<CitiesController> _logger;
         private readonly ICityService _cityService;
+        private readonly ICacheService _cacheService;
 
-        public CitiesController(ILogger<CitiesController> logger, ICityService cityService)
+        public CitiesController
+        (
+            ILogger<CitiesController> logger, 
+            ICityService cityService,
+            ICacheService cacheService
+        )
         {
             _logger = logger;
             _cityService = cityService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
@@ -28,14 +36,20 @@ namespace Homeverse.API.Controllers.V1
         {
             try
             {
-                var cities = await _cityService.GetCitiesAsync();
+                var cacheData = await _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities");
+                if (cacheData != null)
+                {
+                    return Ok(cacheData);
+                }
+                var response = await _cityService.GetCitiesAsync();
 
-                if (cities.Count() == 0)
+                if (response.Count() == 0)
                 {
                     return NotFound();
                 }
+                await _cacheService.SetDataAsync("cities", response);
 
-                return Ok(cities);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -54,14 +68,24 @@ namespace Homeverse.API.Controllers.V1
         {
             try
             {
-                var city = await _cityService.GetCityByIdAsync(id);
+                var cacheData = await _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities");
+                if (cacheData != null)
+                {
+                    var filteredData = cacheData.FirstOrDefault(x => x.Id == id);
+                    if (filteredData != null)
+                    {
+                        return Ok(filteredData);
+                    }
+                }
 
-                if (city.Id == 0)
+                var response = await _cityService.GetCityByIdAsync(id);
+
+                if (response.Id == 0)
                 {
                     return NotFound();
                 }
 
-                return Ok(city);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -78,9 +102,10 @@ namespace Homeverse.API.Controllers.V1
         {
             try
             {
-                var city = await _cityService.AddCityAsync(request);
+                var response = await _cityService.AddCityAsync(request);
+                await _cacheService.RemoveDataAsync("cities");
 
-                return CreatedAtAction(nameof(GetById), new { id = city.Id }, city);
+                return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
             }
             catch
             (Exception ex)
@@ -99,9 +124,10 @@ namespace Homeverse.API.Controllers.V1
         {
             try
             {
-                var city = await _cityService.UpdateCityAsync(id, request);
+                var response = await _cityService.UpdateCityAsync(id, request);
+                await _cacheService.RemoveDataAsync("cities");
 
-                return Ok(city);
+                return Ok(response);
             }
             catch
             (Exception ex)
@@ -121,6 +147,7 @@ namespace Homeverse.API.Controllers.V1
             try
             {
                 await _cityService.DeleteCityAsync(id);
+                await _cacheService.RemoveDataAsync("cities");
 
                 return NoContent();
             }

@@ -3,6 +3,7 @@ using FakeItEasy;
 using Homeverse.API.Controllers.V1;
 using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
+using Homeverse.Application.Interfaces;
 using Homeverse.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ public class CitiesControllerTests
     private readonly Fixture _fixture;
     private readonly ILogger<CitiesController> _logger;
     private readonly ICityService _cityService;
+    private readonly ICacheService _cacheService;
     private readonly CitiesController _sut;
 
     public CitiesControllerTests()
@@ -22,52 +24,79 @@ public class CitiesControllerTests
         _fixture = new Fixture();
         _logger = A.Fake<ILogger<CitiesController>>();
         _cityService = A.Fake<ICityService>();
-        _sut = new CitiesController(_logger, _cityService);
+        _cacheService = A.Fake<ICacheService>();
+        _sut = new CitiesController(_logger, _cityService, _cacheService);
+    }
+
+    [Fact]
+    public async Task Get_WhenThereIsCacheData_ShouldReturnCitiesWithStatusCode200OK()
+    {
+        // Arrange
+        var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
+
+        // Act
+        var actual = await _sut.Get();
+
+        // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
+        var actionResult = Assert.IsType<OkObjectResult>(actual);
+        var result = Assert.IsAssignableFrom<IEnumerable<CityResponse>>(actionResult.Value);
+        Assert.Equal(cacheData.Count(), result.Count());
     }
 
     [Fact]
     public async Task Get_WhenThereAreCities_ShouldReturnCitiesWithStatusCode200OK()
     {
         // Arrange
-        var response = _fixture.CreateMany<CityResponse>(3).ToList();
-        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(response);
+        var cacheData = (IEnumerable<CityResponse>)null;
+        var cities = _fixture.CreateMany<CityResponse>(3).ToList();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
+        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(cities);
 
         // Act
         var actual = await _sut.Get();
 
         // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCitiesAsync()).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.SetDataAsync<IEnumerable<CityResponse>>("cities", cities)).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<OkObjectResult>(actual);
         var result = Assert.IsAssignableFrom<IEnumerable<CityResponse>>(actionResult.Value);
-        Assert.Equal(response.Count(), result.Count());
+        Assert.Equal(cities.Count(), result.Count());
     }
 
     [Fact]
     public async Task Get_WhenThereAreNoCitiesFound_ShouldReturnStatusCode404NotFound()
     {
         // Arrange
-        var response = new List<CityResponse>();
-        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(response);
+        var cacheData = (IEnumerable<CityResponse>)null;
+        var cities = new List<CityResponse>();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
+        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(cities);
 
         // Act
         var actual = await _sut.Get() as StatusCodeResult;
 
         // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCitiesAsync()).MustHaveHappenedOnceExactly();
         Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
     }
 
     [Fact]
-    [Trait("HttpVerb", "GET")]
     public async Task Get_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
+        var cacheData = (IEnumerable<CityResponse>)null;
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCitiesAsync()).Throws<Exception>();
 
         // Act
         var actual = await _sut.Get() as StatusCodeResult;
 
         // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCitiesAsync()).MustHaveHappenedOnceExactly();
         A.CallTo(_logger).Where(
                 call => call.Method.Name == "Log"
@@ -80,31 +109,37 @@ public class CitiesControllerTests
     public async Task GetById_WhenThereIsCity_ShouldReturnCityWithStatusCode200OK()
     {
         // Arrange
+        var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
         var request = _fixture.Create<int>();
         var response = _fixture.Create<CityResponse>();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Returns(response);
 
         // Act
         var actual = await _sut.GetById(request);
 
         // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<OkObjectResult>(actual);
         Assert.IsType<CityResponse>(actionResult.Value);
     }
 
     [Fact]
-    public async Task GetById_WhenThereAreNoCityFound_ShouldReturnStatusCode404NotFound()
+    public async Task GetById_WhenThereIsNoCityFound_ShouldReturnStatusCode404NotFound()
     {
         // Arrange
+        var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
         var request = _fixture.Create<int>();
         var response = new CityResponse();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Returns(response);
 
         // Act
         var actual = await _sut.GetById(request) as StatusCodeResult;
 
         // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).MustHaveHappenedOnceExactly();
         Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
     }
@@ -113,13 +148,16 @@ public class CitiesControllerTests
     public async Task GetById_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
+        var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
         var id = _fixture.Create<int>();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Throws<Exception>();
 
         // Act
         var actual = await _sut.GetById(id) as StatusCodeResult;
 
         // Assert
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).MustHaveHappenedOnceExactly();
         A.CallTo(_logger).Where(
                 call => call.Method.Name == "Log"
@@ -141,12 +179,13 @@ public class CitiesControllerTests
 
         // Assert
         A.CallTo(() => _cityService.AddCityAsync(A<CityRequest>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.RemoveDataAsync("cities")).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<CreatedAtActionResult>(actual);
         Assert.IsType<CityResponse>(actionResult.Value);
     }
 
     [Fact]
-    public async Task Create_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
+    public async Task Add_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
         var request = _fixture.Create<CityRequest>();
@@ -178,6 +217,7 @@ public class CitiesControllerTests
 
         // Assert
         A.CallTo(() => _cityService.UpdateCityAsync(A<int>._, A<CityRequest>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.RemoveDataAsync("cities")).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<OkObjectResult>(actual);
         Assert.IsType<CityResponse>(actionResult.Value);
     }
@@ -214,6 +254,7 @@ public class CitiesControllerTests
 
         // Assert
         A.CallTo(() => _cityService.DeleteCityAsync(A<int>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.RemoveDataAsync("cities")).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<NoContentResult>(actual);
     }
 
