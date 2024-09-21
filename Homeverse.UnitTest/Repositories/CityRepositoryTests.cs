@@ -35,7 +35,7 @@ public class CityRepositoryTests
     }
 
     [Fact]
-    public async Task GetCityAsync_WhenSuccessful_ShouldReturnCity()
+    public async Task GetCityByIdAsync_WhenSuccessful_ShouldReturnCity()
     {
         // Arrange
         var id = 1;

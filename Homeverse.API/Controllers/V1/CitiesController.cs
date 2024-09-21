@@ -41,8 +41,8 @@ namespace Homeverse.API.Controllers.V1
                 {
                     return Ok(cacheData);
                 }
-                var response = await _cityService.GetCitiesAsync();
 
+                var response = await _cityService.GetCitiesAsync();
                 if (response.Count() == 0)
                 {
                     return NotFound();

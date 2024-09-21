@@ -22,6 +22,7 @@ public class CityServiceTests
     public CityServiceTests()
     {
         _fixture = new Fixture();
+        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
         var context = MockDbContext.CreateMockDbContext();
         _unitOfWork = new UnitOfWork(context);
         _mapper = A.Fake<IMapper>();
@@ -51,7 +52,6 @@ public class CityServiceTests
     public async Task GetCityByIdAsync_WhenSuccessful_ShouldReturnCity()
     {
         // Arrange
-        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
         var id = _fixture.Create<int>();
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
@@ -70,7 +70,6 @@ public class CityServiceTests
     public async Task AddCityAsync_WhenSuccessful_ShouldAddAndReturnCity()
     {
         // Arrange
-        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
         var request = _fixture.Create<CityRequest>();
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
@@ -90,7 +89,6 @@ public class CityServiceTests
     public async Task UpdateCityAsync_WhenSuccessful_ShouldUpdateAndReturnCity()
     {
         // Arrange
-        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
         var id = _fixture.Create<int>();
         var request = _fixture.Create<CityRequest>();
         var city = _fixture.Create<City>();
@@ -111,7 +109,6 @@ public class CityServiceTests
     public async Task DeleteCityAsync_WhenSuccessful_ShouldDeleteCity()
     {
         // Arrange
-        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
         var id = _fixture.Create<int>();
         A.CallTo(() => _cityRepository.DeleteCityAsync(id));
 

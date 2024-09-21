@@ -50,9 +50,9 @@ public class CitiesControllerTests
     {
         // Arrange
         var cacheData = (IEnumerable<CityResponse>)null;
-        var cities = _fixture.CreateMany<CityResponse>(3).ToList();
+        var response = _fixture.CreateMany<CityResponse>(3).ToList();
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
-        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(cities);
+        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(response);
 
         // Act
         var actual = await _sut.Get();
@@ -60,10 +60,10 @@ public class CitiesControllerTests
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCitiesAsync()).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _cacheService.SetDataAsync<IEnumerable<CityResponse>>("cities", cities)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.SetDataAsync<IEnumerable<CityResponse>>("cities", response)).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<OkObjectResult>(actual);
         var result = Assert.IsAssignableFrom<IEnumerable<CityResponse>>(actionResult.Value);
-        Assert.Equal(cities.Count(), result.Count());
+        Assert.Equal(response.Count(), result.Count());
     }
 
     [Fact]
@@ -71,9 +71,9 @@ public class CitiesControllerTests
     {
         // Arrange
         var cacheData = (IEnumerable<CityResponse>)null;
-        var cities = new List<CityResponse>();
+        var response = new List<CityResponse>();
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
-        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(cities);
+        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(response);
 
         // Act
         var actual = await _sut.Get() as StatusCodeResult;
