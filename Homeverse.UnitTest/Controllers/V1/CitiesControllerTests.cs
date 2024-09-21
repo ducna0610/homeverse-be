@@ -110,13 +110,13 @@ public class CitiesControllerTests
     {
         // Arrange
         var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
-        var request = _fixture.Create<int>();
+        var id = _fixture.Create<int>();
         var response = _fixture.Create<CityResponse>();
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Returns(response);
 
         // Act
-        var actual = await _sut.GetById(request);
+        var actual = await _sut.GetById(id);
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
@@ -130,13 +130,13 @@ public class CitiesControllerTests
     {
         // Arrange
         var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
-        var request = _fixture.Create<int>();
+        var id = _fixture.Create<int>();
         var response = new CityResponse();
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Returns(response);
 
         // Act
-        var actual = await _sut.GetById(request) as StatusCodeResult;
+        var actual = await _sut.GetById(id) as StatusCodeResult;
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
@@ -167,7 +167,7 @@ public class CitiesControllerTests
     }
 
     [Fact]
-    public async Task Add_WhenValid_ShouldReturnStatusCode201Created()
+    public async Task Add_WhenSuccessful_ShouldReturnStatusCode201Created()
     {
         // Arrange
         var request = _fixture.Create<CityRequest>();
@@ -204,7 +204,7 @@ public class CitiesControllerTests
     }
 
     [Fact]
-    public async Task Update_WhenValid_ShouldReturnClinicStatusCode200OK()
+    public async Task Update_WhenSuccessful_ShouldReturnClinicStatusCode200OK()
     {
         // Arrange
         var id = _fixture.Create<int>();
@@ -243,7 +243,7 @@ public class CitiesControllerTests
     }
 
     [Fact]
-    public async Task Delete_WhenValid_ShouldReturnStatusCode204NoContent()
+    public async Task Delete_WhenSuccessful_ShouldReturnStatusCode204NoContent()
     {
         // Arrange
         var id = _fixture.Create<int>();

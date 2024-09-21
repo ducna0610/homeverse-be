@@ -11,6 +11,7 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(AutoMapperProfiles));
 
         services.AddScoped<ICityService, CityService>();
+        services.AddScoped<IContactService, ContactService>();
 
         return services;
     }

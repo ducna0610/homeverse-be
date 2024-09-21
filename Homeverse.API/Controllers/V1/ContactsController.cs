@@ -1,59 +1,59 @@
-﻿using Homeverse.Application.DTOs.Requests;
+﻿using Asp.Versioning;
+using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
+using Homeverse.Application.Interfaces;
 using Homeverse.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using Asp.Versioning;
-using Homeverse.Application.Interfaces;
 
 namespace Homeverse.API.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class CitiesController : ControllerBase
+    public class ContactsController : ControllerBase
     {
-        private readonly ILogger<CitiesController> _logger;
-        private readonly ICityService _cityService;
+        private readonly ILogger<ContactsController> _logger;
+        private readonly IContactService _contactService;
         private readonly ICacheService _cacheService;
 
-        public CitiesController
+        public ContactsController
         (
-            ILogger<CitiesController> logger, 
-            ICityService cityService,
+            ILogger<ContactsController> logger,
+            IContactService contactService,
             ICacheService cacheService
         )
         {
             _logger = logger;
-            _cityService = cityService;
+            _contactService = contactService;
             _cacheService = cacheService;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CityResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ContactResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var cacheData = await _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities");
+                var cacheData = await _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts");
                 if (cacheData != null)
                 {
                     return Ok(cacheData);
                 }
 
-                var response = await _cityService.GetCitiesAsync();
+                var response = await _contactService.GetContactsAsync();
                 if (response.Count() == 0)
                 {
                     return NotFound();
                 }
-                await _cacheService.SetDataAsync("cities", response);
+                await _cacheService.SetDataAsync("contacts", response);
 
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"The method {nameof(CityService.GetCitiesAsync)} caused an exception", ex);
+                _logger.LogError($"The method {nameof(ContactService.GetContactsAsync)} caused an exception", ex);
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError);
@@ -61,14 +61,14 @@ namespace Homeverse.API.Controllers.V1
 
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(typeof(CityResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ContactResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                var cacheData = await _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities");
+                var cacheData = await _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts");
                 if (cacheData != null)
                 {
                     var filteredData = cacheData.FirstOrDefault(x => x.Id == id);
@@ -78,7 +78,7 @@ namespace Homeverse.API.Controllers.V1
                     }
                 }
 
-                var response = await _cityService.GetCityByIdAsync(id);
+                var response = await _contactService.GetContactByIdAsync(id);
                 if (response.Id == 0)
                 {
                     return NotFound();
@@ -88,50 +88,28 @@ namespace Homeverse.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                _logger.LogError($"The method {nameof(CityService.GetCityByIdAsync)} caused an exception", ex);
+                _logger.LogError($"The method {nameof(ContactService.GetContactByIdAsync)} caused an exception", ex);
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(CityResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ContactResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add(CityRequest request)
+        public async Task<IActionResult> Add(ContactRequest request)
         {
             try
             {
-                var response = await _cityService.AddCityAsync(request);
-                await _cacheService.RemoveDataAsync("cities");
+                var response = await _contactService.AddContactAsync(request);
+                await _cacheService.RemoveDataAsync("contacts");
 
                 return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
             }
             catch
             (Exception ex)
             {
-                _logger.LogError($"The method {nameof(CityService.AddCityAsync)} caused an exception", ex);
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [HttpPut]
-        [Route("{id}")]
-        [ProducesResponseType(typeof(CityResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(int id, CityRequest request)
-        {
-            try
-            {
-                var response = await _cityService.UpdateCityAsync(id, request);
-                await _cacheService.RemoveDataAsync("cities");
-
-                return Ok(response);
-            }
-            catch
-            (Exception ex)
-            {
-                _logger.LogError($"The method {nameof(CityService.UpdateCityAsync)} caused an exception", ex);
+                _logger.LogError($"The method {nameof(ContactService.AddContactAsync)} caused an exception", ex);
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError);
@@ -145,14 +123,14 @@ namespace Homeverse.API.Controllers.V1
         {
             try
             {
-                await _cityService.DeleteCityAsync(id);
-                await _cacheService.RemoveDataAsync("cities");
+                await _contactService.DeleteContactAsync(id);
+                await _cacheService.RemoveDataAsync("contacts");
 
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError($"The method {nameof(CityService.DeleteCityAsync)} caused an exception", ex);
+                _logger.LogError($"The method {nameof(ContactService.DeleteContactAsync)} caused an exception", ex);
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError);
