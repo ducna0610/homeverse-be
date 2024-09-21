@@ -11,5 +11,8 @@ public class AutoMapperProfiles : Profile
     {
         CreateMap<CityRequest, City>();
         CreateMap<City, CityResponse>();
+
+        CreateMap<ContactRequest, Contact>();
+        CreateMap<Contact, ContactResponse>();
     }
 }

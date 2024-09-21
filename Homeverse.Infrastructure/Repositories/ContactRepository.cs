@@ -19,6 +19,11 @@ public class ContactRepository : IContactRepository
         return await _context.Contacts.ToListAsync();
     }
 
+    public async Task<Contact> GetContactByIdAsync(int id)
+    {
+        return await _context.Contacts.FindAsync(id);
+    }
+
     public async Task AddContactAsync(Contact contact)
     {
         await _context.Contacts.AddAsync(contact);
