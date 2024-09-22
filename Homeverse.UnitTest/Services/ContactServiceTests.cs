@@ -34,8 +34,8 @@ public class ContactServiceTests
     public async Task GetContactsAsync_WhenSuccessful_ShouldReturnContacts()
     {
         // Arrange
-        var contacts = _fixture.Create<IEnumerable<Contact>>().ToList();
-        var response = _fixture.Create<IEnumerable<ContactResponse>>().ToList();
+        var contacts = _fixture.CreateMany<Contact>(3).ToList();
+        var response = _fixture.CreateMany<ContactResponse>(3).ToList();
         A.CallTo(() => _contactRepository.GetContactsAsync()).Returns(contacts);
         A.CallTo(() => _mapper.Map<IEnumerable<ContactResponse>>(A<IEnumerable<Contact>>._)).Returns(response);
 
@@ -45,6 +45,7 @@ public class ContactServiceTests
         // Assert
         A.CallTo(() => _contactRepository.GetContactsAsync()).MustHaveHappenedOnceExactly();
         Assert.IsAssignableFrom<IEnumerable<ContactResponse>>(actual);
+        Assert.Equal(contacts.Count(), actual.Count());
     }
 
     [Fact]

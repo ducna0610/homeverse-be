@@ -35,8 +35,8 @@ public class CityServiceTests
     {
         // Arrange
         _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
-        var cities = _fixture.Create<IEnumerable<City>>().ToList();
-        var response = _fixture.Create<IEnumerable<CityResponse>>().ToList();
+        var cities = _fixture.CreateMany<City>(3).ToList();
+        var response = _fixture.CreateMany<CityResponse>(3).ToList();
         A.CallTo(() => _cityRepository.GetCitiesAsync()).Returns(cities);
         A.CallTo(() => _mapper.Map<IEnumerable<CityResponse>>(A<IEnumerable<City>>._)).Returns(response);
 
@@ -46,6 +46,7 @@ public class CityServiceTests
         // Assert
         A.CallTo(() => _cityRepository.GetCitiesAsync()).MustHaveHappenedOnceExactly();
         Assert.IsAssignableFrom<IEnumerable<CityResponse>>(actual);
+        Assert.Equal(cities.Count(), actual.Count());
     }
 
     [Fact]
