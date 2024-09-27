@@ -31,7 +31,7 @@ public class ContactRepositoryTests
 
         // Assert
         Assert.IsAssignableFrom<IEnumerable<Contact>>(actual);
-        Assert.Equal(actual.Count(), context.Contacts.Count());
+        Assert.Equal(context.Contacts.Count(), actual.Count());
     }
 
     [Fact]

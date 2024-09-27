@@ -22,7 +22,9 @@ public class CityServiceTests
     public CityServiceTests()
     {
         _fixture = new Fixture();
-        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
+        _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => _fixture.Behaviors.Remove(b));
+        _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         var context = MockDbContext.CreateMockDbContext();
         _unitOfWork = new UnitOfWork(context);
         _mapper = A.Fake<IMapper>();
@@ -34,9 +36,8 @@ public class CityServiceTests
     public async Task GetCitiesAsync_WhenSuccessful_ShouldReturnCities()
     {
         // Arrange
-        _fixture.Customize<City>(e => e.With(x => x.Properties, new List<Property>()));
-        var cities = _fixture.Create<IEnumerable<City>>().ToList();
-        var response = _fixture.Create<IEnumerable<CityResponse>>().ToList();
+        var cities = _fixture.CreateMany<City>(3).ToList();
+        var response = _fixture.CreateMany<CityResponse>(3).ToList();
         A.CallTo(() => _cityRepository.GetCitiesAsync()).Returns(cities);
         A.CallTo(() => _mapper.Map<IEnumerable<CityResponse>>(A<IEnumerable<City>>._)).Returns(response);
 
@@ -46,6 +47,7 @@ public class CityServiceTests
         // Assert
         A.CallTo(() => _cityRepository.GetCitiesAsync()).MustHaveHappenedOnceExactly();
         Assert.IsAssignableFrom<IEnumerable<CityResponse>>(actual);
+        Assert.Equal(cities.Count(), actual.Count());
     }
 
     [Fact]
@@ -55,7 +57,7 @@ public class CityServiceTests
         var id = _fixture.Create<int>();
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
-        A.CallTo(() => _cityRepository.GetCityByIdAsync(id)).Returns(city);
+        A.CallTo(() => _cityRepository.GetCityByIdAsync(A<int>._)).Returns(city);
         A.CallTo(() => _mapper.Map<CityResponse>(A<City>._)).Returns(response);
 
         // Act
@@ -74,7 +76,7 @@ public class CityServiceTests
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
         A.CallTo(() => _mapper.Map<City>(A<CityRequest>._)).Returns(city);
-        A.CallTo(() => _cityRepository.AddCityAsync(city));
+        A.CallTo(() => _cityRepository.AddCityAsync(A<City>._));
         A.CallTo(() => _mapper.Map<CityResponse>(A<City>._)).Returns(response);
 
         // Act
@@ -94,7 +96,7 @@ public class CityServiceTests
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
         A.CallTo(() => _mapper.Map<City>(A<CityRequest>._)).Returns(city);
-        A.CallTo(() => _cityRepository.UpdateCityAsync(city));
+        A.CallTo(() => _cityRepository.UpdateCityAsync(A<City>._));
         A.CallTo(() => _mapper.Map<CityResponse>(A<City>._)).Returns(response);
 
         // Act
@@ -110,7 +112,7 @@ public class CityServiceTests
     {
         // Arrange
         var id = _fixture.Create<int>();
-        A.CallTo(() => _cityRepository.DeleteCityAsync(id));
+        A.CallTo(() => _cityRepository.DeleteCityAsync(A<int>._));
 
         // Act
         await _sut.DeleteCityAsync(id);

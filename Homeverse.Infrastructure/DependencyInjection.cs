@@ -25,6 +25,8 @@ public static class DependencyInjection
             option.Configuration = config.GetConnectionString("Redis");
         });
         services.AddSingleton<ICacheService, CacheService>();
+        services.Configure<MailSettings>(config.GetSection("MailSettings"));
+        services.AddSingleton<IMailService, MailService>();
 
         return services;
     }

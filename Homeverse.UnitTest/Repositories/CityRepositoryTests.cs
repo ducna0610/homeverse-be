@@ -31,7 +31,7 @@ public class CityRepositoryTests
 
         // Assert
         Assert.IsAssignableFrom<IEnumerable<City>>(actual); 
-        Assert.Equal(actual.Count(), context.Cities.Count());
+        Assert.Equal(context.Cities.Count(), actual.Count());
     }
 
     [Fact]

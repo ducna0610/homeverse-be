@@ -76,12 +76,12 @@ public class CitiesControllerTests
         A.CallTo(() => _cityService.GetCitiesAsync()).Returns(response);
 
         // Act
-        var actual = await _sut.Get() as StatusCodeResult;
+        var actual = await _sut.Get();
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCitiesAsync()).MustHaveHappenedOnceExactly();
-        Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
+        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
@@ -136,12 +136,12 @@ public class CitiesControllerTests
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Returns(response);
 
         // Act
-        var actual = await _sut.GetById(id) as StatusCodeResult;
+        var actual = await _sut.GetById(id);
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).MustHaveHappenedOnceExactly();
-        Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
+        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
@@ -204,7 +204,7 @@ public class CitiesControllerTests
     }
 
     [Fact]
-    public async Task Update_WhenSuccessful_ShouldReturnClinicStatusCode200OK()
+    public async Task Update_WhenSuccessful_ShouldReturnCityWithStatusCode200OK()
     {
         // Arrange
         var id = _fixture.Create<int>();
@@ -255,7 +255,7 @@ public class CitiesControllerTests
         // Assert
         A.CallTo(() => _cityService.DeleteCityAsync(A<int>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cacheService.RemoveDataAsync("cities")).MustHaveHappenedOnceExactly();
-        var actionResult = Assert.IsType<NoContentResult>(actual);
+        Assert.IsType<NoContentResult>(actual);
     }
 
     [Fact]
