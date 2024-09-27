@@ -13,6 +13,8 @@ public static class DependencyInjection
         services.AddScoped<ICityService, CityService>();
         services.AddScoped<IContactService, ContactService>();
         services.AddScoped<IEnumService, EnumService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }
