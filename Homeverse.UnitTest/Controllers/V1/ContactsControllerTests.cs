@@ -76,12 +76,12 @@ public class ContactsControllerTests
         A.CallTo(() => _contactService.GetContactsAsync()).Returns(response);
 
         // Act
-        var actual = await _sut.Get() as StatusCodeResult;
+        var actual = await _sut.Get();
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _contactService.GetContactsAsync()).MustHaveHappenedOnceExactly();
-        Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
+        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
@@ -136,12 +136,12 @@ public class ContactsControllerTests
         A.CallTo(() => _contactService.GetContactByIdAsync(A<int>._)).Returns(response);
 
         // Act
-        var actual = await _sut.GetById(id) as StatusCodeResult;
+        var actual = await _sut.GetById(id);
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _contactService.GetContactByIdAsync(A<int>._)).MustHaveHappenedOnceExactly();
-        Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
+        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
@@ -216,7 +216,7 @@ public class ContactsControllerTests
         // Assert
         A.CallTo(() => _contactService.DeleteContactAsync(A<int>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _cacheService.RemoveDataAsync("contacts")).MustHaveHappenedOnceExactly();
-        var actionResult = Assert.IsType<NoContentResult>(actual);
+        Assert.IsType<NoContentResult>(actual);
     }
 
     [Fact]

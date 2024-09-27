@@ -74,12 +74,12 @@ public class EnumsControllerTests
         A.CallTo(() => _enumService.GetCaegoryEnum()).Returns(response);
 
         // Act
-        var actual = await _sut.GetCategoryEnum() as StatusCodeResult;
+        var actual = await _sut.GetCategoryEnum();
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<KeyValuePair<int, string>>>("categories")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _enumService.GetCaegoryEnum()).MustHaveHappenedOnceExactly();
-        Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
+        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
@@ -151,12 +151,12 @@ public class EnumsControllerTests
         A.CallTo(() => _enumService.GetFurnishEnum()).Returns(response);
 
         // Act
-        var actual = await _sut.GetFurnishEnum() as StatusCodeResult;
+        var actual = await _sut.GetFurnishEnum();
 
         // Assert
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<KeyValuePair<int, string>>>("furnishes")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _enumService.GetFurnishEnum()).MustHaveHappenedOnceExactly();
-        Assert.Equal(StatusCodes.Status404NotFound, actual.StatusCode);
+        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
