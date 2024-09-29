@@ -11,8 +11,18 @@ public class CityRepositoryTests
     private async Task<HomeverseDbContext> SeedDatabaseContext()
     {
         var context = MockDbContext.CreateMockDbContext();
-        context.Cities.Add(new City { Id = 1, Name = "HCM" });
-        context.Cities.Add(new City { Id = 2, Name = "HN" });
+        var city1 = new City
+        {
+            Id = 1,
+            Name = "City1",
+        };
+        var city2 = new City
+        {
+            Id = 2,
+            Name = "City2",
+        };
+        await context.Cities.AddAsync(city1);
+        await context.Cities.AddAsync(city2);
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
@@ -53,7 +63,10 @@ public class CityRepositoryTests
     public async Task AddCityAsync_WhenSuccessful_ShouldAddCity()
     {
         // Arrange
-        var city = new City { Name = "test" };
+        var city = new City 
+        { 
+            Name = "test",
+        };
         var context = await SeedDatabaseContext();
         var sut = new CityRepository(context);
 
@@ -69,7 +82,11 @@ public class CityRepositoryTests
     public async Task UpdateCityAsync_WhenSuccessful_ShouldUpdateCity()
     {
         // Arrange
-        var city = new City { Id = 1, Name = "test" };
+        var city = new City 
+        { 
+            Id = 1, 
+            Name = "test",
+        };
         var context = await SeedDatabaseContext();
         var sut = new CityRepository(context);
 
@@ -82,7 +99,7 @@ public class CityRepositoryTests
     }
 
     [Fact]
-    public async Task DeleteCityAsync_WhenSuccessful_ShouldUpdateCity()
+    public async Task DeleteCityAsync_WhenSuccessful_ShouldDeleteCity()
     {
         // Arrange
         var id = 1;

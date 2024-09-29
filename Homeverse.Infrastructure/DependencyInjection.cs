@@ -27,6 +27,8 @@ public static class DependencyInjection
         services.AddSingleton<ICacheService, CacheService>();
         services.Configure<MailSettings>(config.GetSection("MailSettings"));
         services.AddSingleton<IMailService, MailService>();
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+        services.AddSingleton<IFileStorageService, FileStorageService>();
 
         return services;
     }

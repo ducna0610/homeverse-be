@@ -11,8 +11,24 @@ public class ContactRepositoryTests
     private async Task<HomeverseDbContext> SeedDatabaseContext()
     {
         var context = MockDbContext.CreateMockDbContext();
-        context.Contacts.Add(new Contact { Id = 1, Name = "Duc senpai", Email = "ducna0610+1@gmail.com", Phone = "0973054202", Message = "Hello" });
-        context.Contacts.Add(new Contact { Id = 2, Name = "Duc oppa", Email = "ducna0610+2@gmail.com", Phone = "0973054202", Message = "Hi" });
+        var contact1 = new Contact
+        {
+            Id = 1,
+            Name = "Duc senpai",
+            Email = "contact1@gmail.com",
+            Phone = "0123456789",
+            Message = "Hello",
+        };
+        var contact2 = new Contact
+        {
+            Id = 2,
+            Name = "Duc oppa",
+            Email = "contact2@gmail.com",
+            Phone = "0987654321",
+            Message = "Hi",
+        };
+        await context.Contacts.AddAsync(contact1);
+        await context.Contacts.AddAsync(contact2);
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
@@ -53,7 +69,13 @@ public class ContactRepositoryTests
     public async Task AddContactAsync_WhenSuccessful_ShouldAddContact()
     {
         // Arrange
-        var contact = new Contact { Name = "test", Email = "test@gmail.com", Phone = "0123456789", Message = "test" };
+        var contact = new Contact 
+        { 
+            Name = "test", 
+            Email = "test@gmail.com", 
+            Phone = "0123456789", 
+            Message = "test" 
+        };
         var context = await SeedDatabaseContext();
         var sut = new ContactRepository(context);
 
