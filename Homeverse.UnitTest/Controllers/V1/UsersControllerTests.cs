@@ -451,7 +451,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task ConfirmEmail_WhenUserNotFound_ShouldReturnUserWithStatusCode404NotFound()
+    public async Task ConfirmEmail_WhenThereIsNoUserFound_ShouldReturnStatusCode404NotFound()
     {
         // Arrange
         var email = _fixture.Create<string>();
@@ -504,7 +504,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task ForgotPassword_WhenUserNotFound_ShouldReturnUserWithStatusCode404NotFound()
+    public async Task ForgotPassword_WhenThereIsNoUserFound_ShouldReturnStatusCode404NotFound()
     {
         // Arrange
         var email = _fixture.Create<string>();
@@ -558,7 +558,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task ResetPassword_WhenUserNotFound_ShouldReturnUserWithStatusCode404NotFound()
+    public async Task ResetPassword_WhenThereIsNoUserFound_ShouldReturnStatusCode404NotFound()
     {
         // Arrange
         var request = _fixture.Create<ResetPasswordRequest>();

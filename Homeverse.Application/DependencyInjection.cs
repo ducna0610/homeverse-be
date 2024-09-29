@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IEnumService, EnumService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPropertyService, PropertyService>();
 
         return services;
     }

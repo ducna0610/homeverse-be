@@ -74,7 +74,6 @@ public class ContactServiceTests
         var contact = _fixture.Create<Contact>();
         var response = _fixture.Create<ContactResponse>();
         A.CallTo(() => _mapper.Map<Contact>(A<ContactRequest>._)).Returns(contact);
-        A.CallTo(() => _contactRepository.AddContactAsync(contact));
         A.CallTo(() => _mapper.Map<ContactResponse>(A<Contact>._)).Returns(response);
 
         // Act
@@ -90,7 +89,6 @@ public class ContactServiceTests
     {
         // Arrange
         var id = _fixture.Create<int>();
-        A.CallTo(() => _contactRepository.DeleteContactAsync(A<int>._));
 
         // Act
         await _sut.DeleteContactAsync(id);

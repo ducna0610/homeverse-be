@@ -19,7 +19,7 @@ public class UserRepositoryTests
             Phone = "0123456789", 
             EmailVerifyToken = "", 
             PasswordHash = Convert.FromBase64String(""), 
-            PasswordSalt = Convert.FromBase64String("") 
+            PasswordSalt = Convert.FromBase64String(""),
         };
         user1.Connections = new List<Connection>();
         user1.Connections.Add(new Connection
@@ -34,7 +34,7 @@ public class UserRepositoryTests
             Phone = "0987654321", 
             EmailVerifyToken = "", 
             PasswordHash = Convert.FromBase64String(""), 
-            PasswordSalt = Convert.FromBase64String("") 
+            PasswordSalt = Convert.FromBase64String(""),
         };
         var user3 = new User
         {
@@ -44,7 +44,7 @@ public class UserRepositoryTests
             Phone = "0246813579",
             EmailVerifyToken = "",
             PasswordHash = Convert.FromBase64String(""),
-            PasswordSalt = Convert.FromBase64String("")
+            PasswordSalt = Convert.FromBase64String(""),
         };
         var message1 = new Message
         {
@@ -53,7 +53,7 @@ public class UserRepositoryTests
             Sender = user1,
             ReceiverId = user2.Id,
             Receiver = user2,
-            Content = "Hi"
+            Content = "Hi",
         };
         await context.Users.AddAsync(user1);
         await context.Users.AddAsync(user2);
@@ -138,7 +138,16 @@ public class UserRepositoryTests
     public async Task UpdateUserAsync_WhenSuccessful_ShouldUpdateUser()
     {
         // Arrange
-        var user = new User { Id = 1, Name = "test", Email = "test@gmail.com", Phone = "0102030405", EmailVerifyToken = "", PasswordHash = Convert.FromBase64String(""), PasswordSalt = Convert.FromBase64String("") };
+        var user = new User 
+        { 
+            Id = 1, 
+            Name = "test", 
+            Email = "test@gmail.com", 
+            Phone = "0102030405", 
+            EmailVerifyToken = "", 
+            PasswordHash = Convert.FromBase64String(""), 
+            PasswordSalt = Convert.FromBase64String(""),
+        };
         var context = await SeedDatabaseContext();
         var sut = new UserRepository(context);
 
@@ -151,7 +160,7 @@ public class UserRepositoryTests
     }
 
     [Fact]
-    public async Task GetConnectionIdsByUserIdAsync_WhenSuccessful_ShouldReturnListConnectionId()
+    public async Task GetConnectionIdsByUserIdAsync_WhenSuccessful_ShouldReturnConnectionIds()
     {
         // Arrange
         var userId = 1;
@@ -166,7 +175,7 @@ public class UserRepositoryTests
     }
     
     [Fact]
-    public async Task GetFriendsAsync_WhenSuccessful_ShouldReturnListConnectionId()
+    public async Task GetFriendsAsync_WhenSuccessful_ShouldReturnFriends()
     {
         // Arrange
         var userId = 1;
@@ -182,7 +191,7 @@ public class UserRepositoryTests
     }
 
     [Fact]
-    public async Task GetFriendAsync_WhenSuccessful_ShouldReturnListConnectionId()
+    public async Task GetFriendAsync_WhenSuccessful_ShouldReturnFriend()
     {
         // Arrange
         var userId = 1;
@@ -199,7 +208,7 @@ public class UserRepositoryTests
     }
 
     [Fact]
-    public async Task GetFriendConnectionIdsAsync_WhenSuccessful_ShouldReturnListConnectionId()
+    public async Task GetFriendConnectionIdsAsync_WhenSuccessful_ShouldReturnConnectionIds()
     {
         // Arrange
         var userId = 2;
@@ -215,7 +224,7 @@ public class UserRepositoryTests
     }
 
     [Fact]
-    public async Task AddConnectionAsync_WhenSuccessful_ShouldReturnListConnectionId()
+    public async Task AddConnectionAsync_WhenSuccessful_ShouldAddConnectionId()
     {
         // Arrange
         var connection = new Connection
@@ -235,7 +244,7 @@ public class UserRepositoryTests
     }
 
     [Fact]
-    public async Task DeleteConnectionAsync_WhenSuccessful_ShouldReturnListConnectionId()
+    public async Task DeleteConnectionAsync_WhenSuccessful_ShouldDeleteConnectionId()
     {
         // Arrange
         var connectionId = "xxx";

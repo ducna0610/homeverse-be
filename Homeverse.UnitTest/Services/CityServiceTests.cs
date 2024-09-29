@@ -76,7 +76,6 @@ public class CityServiceTests
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
         A.CallTo(() => _mapper.Map<City>(A<CityRequest>._)).Returns(city);
-        A.CallTo(() => _cityRepository.AddCityAsync(A<City>._));
         A.CallTo(() => _mapper.Map<CityResponse>(A<City>._)).Returns(response);
 
         // Act
@@ -96,7 +95,6 @@ public class CityServiceTests
         var city = _fixture.Create<City>();
         var response = _fixture.Create<CityResponse>();
         A.CallTo(() => _mapper.Map<City>(A<CityRequest>._)).Returns(city);
-        A.CallTo(() => _cityRepository.UpdateCityAsync(A<City>._));
         A.CallTo(() => _mapper.Map<CityResponse>(A<City>._)).Returns(response);
 
         // Act
@@ -112,7 +110,6 @@ public class CityServiceTests
     {
         // Arrange
         var id = _fixture.Create<int>();
-        A.CallTo(() => _cityRepository.DeleteCityAsync(A<int>._));
 
         // Act
         await _sut.DeleteCityAsync(id);
