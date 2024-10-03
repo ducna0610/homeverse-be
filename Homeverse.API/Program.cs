@@ -51,6 +51,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+var frontendUrl = builder.Configuration.GetSection("UrlSettings:Frontend").Value;
+app.UseCors(policy => policy
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins(frontendUrl));
+
 app.UseAuthorization();
 
 app.MapControllers();
