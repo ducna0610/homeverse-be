@@ -131,7 +131,7 @@ public class CitiesControllerTests
         // Arrange
         var cacheData = _fixture.CreateMany<CityResponse>(3).ToList();
         var id = _fixture.Create<int>();
-        var response = new CityResponse();
+        var response = (CityResponse)null;
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
         A.CallTo(() => _cityService.GetCityByIdAsync(A<int>._)).Returns(response);
 

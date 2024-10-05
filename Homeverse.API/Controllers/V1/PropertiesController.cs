@@ -122,7 +122,7 @@ public class PropertiesController : ControllerBase
         try
         {
             var response = await _propertyService.GetPropertyByIdAsync(id);
-            if (response.Id == 0)
+            if (response == null)
             {
                 return NotFound();
             }

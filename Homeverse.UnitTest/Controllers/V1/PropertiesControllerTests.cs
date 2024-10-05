@@ -230,7 +230,7 @@ public class PropertiesControllerTests
     {
         // Arrange
         var id = _fixture.Create<int>();
-        var response = new PropertyDetailResponse();
+        var response = (PropertyDetailResponse)null;
         A.CallTo(() => _propertyService.GetPropertyByIdAsync(A<int>._)).Returns(response);
 
         // Act

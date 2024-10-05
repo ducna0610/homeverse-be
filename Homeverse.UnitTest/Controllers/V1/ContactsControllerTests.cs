@@ -131,7 +131,7 @@ public class ContactsControllerTests
         // Arrange
         var cacheData = _fixture.CreateMany<ContactResponse>(3).ToList();
         var id = _fixture.Create<int>();
-        var response = new ContactResponse();
+        var response = (ContactResponse)null;
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts")).Returns(cacheData);
         A.CallTo(() => _contactService.GetContactByIdAsync(A<int>._)).Returns(response);
 

@@ -79,7 +79,7 @@ public class ContactsController : ControllerBase
             }
 
             var response = await _contactService.GetContactByIdAsync(id);
-            if (response.Id == 0)
+            if (response == null)
             {
                 return NotFound();
             }
