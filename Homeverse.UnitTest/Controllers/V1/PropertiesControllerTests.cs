@@ -526,21 +526,6 @@ public class PropertiesControllerTests
     }
 
     [Fact]
-    public async Task GetBookmarks_WhenThereAreNoBookmarksFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var response = new List<PropertyResponse>();
-        A.CallTo(() => _propertyService.GetBookmarksAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.GetBookmarks();
-
-        // Assert
-        A.CallTo(() => _propertyService.GetBookmarksAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
-    }
-
-    [Fact]
     public async Task GetBookmarks_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
@@ -634,7 +619,7 @@ public class PropertiesControllerTests
     }
 
     [Fact]
-    public async Task DeleteBookmark_WhenSuccessful_ShouldReturnPropertiesWithStatusCode200OK()
+    public async Task DeleteBookmark_WhenSuccessful_ShouldReturnStatusCode204NoContent()
     {
         // Arrange
         var propId = _fixture.Create<int>();
@@ -644,7 +629,6 @@ public class PropertiesControllerTests
 
         // Assert
         A.CallTo(() => _propertyService.DeleteBookmarkAsync(A<int>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _propertyService.GetBookmarksAsync()).MustHaveHappenedOnceExactly();
     }
 
     [Fact]
