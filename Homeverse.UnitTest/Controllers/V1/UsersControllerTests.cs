@@ -134,7 +134,7 @@ public class UsersControllerTests
         // Arrange
         var cacheData = _fixture.CreateMany<UserResponse>(3).ToList();
         var id = _fixture.Create<int>();
-        var response = new UserResponse();
+        var response = (UserResponse)null;
         A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<UserResponse>>("users")).Returns(cacheData);
         A.CallTo(() => _userService.GetUserByIdAsync(A<int>._)).Returns(response);
 
@@ -189,8 +189,8 @@ public class UsersControllerTests
     public async Task GetProfile_WhenThereIsNoUserFound_ShouldReturnStatusCode404NotFound()
     {
         // Arrange
-        var response = new UserResponse();
-        A.CallTo(() => _userService.GetUserByIdAsync(A<int>._)).Returns(response);
+        var response = (UserResponse)null;
+        A.CallTo(() => _userService.GetProfileAsync()).Returns(response);
 
         // Act
         var actual = await _sut.GetProfile();

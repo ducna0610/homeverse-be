@@ -122,7 +122,7 @@ public class PropertiesController : ControllerBase
         try
         {
             var response = await _propertyService.GetPropertyByIdAsync(id);
-            if (response.Id == 0)
+            if (response == null)
             {
                 return NotFound();
             }
@@ -246,10 +246,6 @@ public class PropertiesController : ControllerBase
         try
         {
             var response = await _propertyService.GetBookmarksAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
 
             return Ok(response);
         }
@@ -293,7 +289,7 @@ public class PropertiesController : ControllerBase
     }
 
     [HttpDelete("delete-bookmark/{propId}")]
-    [ProducesResponseType(typeof(IEnumerable<PropertyResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteBookmark(int propId)
     {
@@ -301,7 +297,7 @@ public class PropertiesController : ControllerBase
         {
             await _propertyService.DeleteBookmarkAsync(propId);
 
-            return await GetBookmarks();
+            return NoContent();
         }
         catch (Exception ex)
         {

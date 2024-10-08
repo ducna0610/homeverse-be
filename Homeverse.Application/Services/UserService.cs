@@ -147,7 +147,7 @@ public class UserService : IUserService
                 await _userRepository.UpdateUserAsync(user);
             });
 
-            var apiUrl = _configuration["ApiUrl"];
+            var apiUrl = _configuration.GetSection("UrlSettings:Api").Value;
             var link = $"{apiUrl}/api/v1/users/reset-password";
             var content = $@"
 <h3>Vui lòng nhập mật khẩu mới bên dưới</h3>

@@ -87,7 +87,7 @@ public class UsersController : ControllerBase
 
             var response = await _userService.GetUserByIdAsync(id);
 
-            if (response.Id == 0)
+            if (response == null)
             {
                 return NotFound();
             }
@@ -113,7 +113,7 @@ public class UsersController : ControllerBase
         {
             var response = await _userService.GetProfileAsync();
 
-            if (response.Id == 0)
+            if (response == null)
             {
                 return NotFound();
             }

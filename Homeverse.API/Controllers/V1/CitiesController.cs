@@ -79,7 +79,7 @@ public class CitiesController : ControllerBase
             }
 
             var response = await _cityService.GetCityByIdAsync(id);
-            if (response.Id == 0)
+            if (response == null)
             {
                 return NotFound();
             }
