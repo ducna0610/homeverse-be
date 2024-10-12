@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Homeverse.Application;
 using Homeverse.Infrastructure;
 using Asp.Versioning;
+using Homeverse.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -55,10 +57,13 @@ var frontendUrl = builder.Configuration.GetSection("UrlSettings:Frontend").Value
 app.UseCors(policy => policy
     .AllowAnyHeader()
     .AllowAnyMethod()
+    .AllowCredentials()
     .WithOrigins(frontendUrl));
 
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<ChatHub>("hubs/chat");
 
 app.Run();

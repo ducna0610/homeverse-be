@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPropertyService, PropertyService>();
+        services.AddScoped<IMessageService, MessageService>();
 
         return services;
     }

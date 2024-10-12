@@ -41,5 +41,8 @@ public class AutoMapperProfiles : Profile
             .ForMember(d => d.ImageUrl, o => o.MapFrom(x => x.Photos.FirstOrDefault(x => x.IsPrimary == true).ImageUrl));
 
         CreateMap<Photo, PhotoResponse>();
+
+        CreateMap<MessageRequest, Message>();
+        CreateMap<Message, MessageResponse>();
     }
 }
