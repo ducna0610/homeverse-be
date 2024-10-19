@@ -30,7 +30,6 @@ public class CitiesController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<CityResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get()
     {
@@ -43,10 +42,6 @@ public class CitiesController : ControllerBase
             }
 
             var response = await _cityService.GetCitiesAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
             await _cacheService.SetDataAsync("cities", response);
 
             return Ok(response);

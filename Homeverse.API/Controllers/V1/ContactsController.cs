@@ -30,7 +30,6 @@ public class ContactsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ContactResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get()
     {
@@ -43,10 +42,6 @@ public class ContactsController : ControllerBase
             }
 
             var response = await _contactService.GetContactsAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
             await _cacheService.SetDataAsync("contacts", response);
 
             return Ok(response);

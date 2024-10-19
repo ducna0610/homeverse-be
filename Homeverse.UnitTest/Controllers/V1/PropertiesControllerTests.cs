@@ -70,24 +70,6 @@ public class PropertiesControllerTests
     }
 
     [Fact]
-    public async Task GetAll_WhenThereAreNoPropertiesFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var cacheData = (IEnumerable<PropertyResponse>)null;
-        var response = new List<PropertyResponse>();
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).Returns(cacheData);
-        A.CallTo(() => _propertyService.GetAllPropertiesAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.GetAll();
-
-        // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _propertyService.GetAllPropertiesAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
-    }
-
-    [Fact]
     public async Task GetAll_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
@@ -126,21 +108,6 @@ public class PropertiesControllerTests
     }
 
     [Fact]
-    public async Task GetActive_WhenThereAreNoPropertiesFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var response = new List<PropertyResponse>();
-        A.CallTo(() => _propertyService.GetPropertiesAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.GetActive();
-
-        // Assert
-        A.CallTo(() => _propertyService.GetPropertiesAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
-    }
-
-    [Fact]
     public async Task GetActive_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
@@ -173,21 +140,6 @@ public class PropertiesControllerTests
         var actionResult = Assert.IsType<OkObjectResult>(actual);
         var result = Assert.IsAssignableFrom<IEnumerable<PropertyDetailResponse>>(actionResult.Value);
         Assert.Equal(response.Count(), result.Count());
-    }
-
-    [Fact]
-    public async Task GetForUser_WhenThereAreNoPropertiesFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var response = new List<PropertyDetailResponse>();
-        A.CallTo(() => _propertyService.GetAllPropertiesForUserAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.GetForUser();
-
-        // Assert
-        A.CallTo(() => _propertyService.GetAllPropertiesForUserAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
     }
 
     [Fact]
