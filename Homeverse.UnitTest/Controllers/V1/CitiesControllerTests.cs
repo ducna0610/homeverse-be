@@ -67,24 +67,6 @@ public class CitiesControllerTests
     }
 
     [Fact]
-    public async Task Get_WhenThereAreNoCitiesFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var cacheData = (IEnumerable<CityResponse>)null;
-        var response = new List<CityResponse>();
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).Returns(cacheData);
-        A.CallTo(() => _cityService.GetCitiesAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.Get();
-
-        // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<CityResponse>>("cities")).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _cityService.GetCitiesAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
-    }
-
-    [Fact]
     public async Task Get_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange

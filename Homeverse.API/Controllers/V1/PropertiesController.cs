@@ -34,7 +34,6 @@ public class PropertiesController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<PropertyResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
     {
@@ -47,10 +46,6 @@ public class PropertiesController : ControllerBase
             }
 
             var response = await _propertyService.GetAllPropertiesAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
             await _cacheService.SetDataAsync("properties", response);
 
             return Ok(response);
@@ -65,17 +60,12 @@ public class PropertiesController : ControllerBase
 
     [HttpGet("user")]
     [ProducesResponseType(typeof(IEnumerable<PropertyDetailResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetForUser()
     {
         try
         {
             var response = await _propertyService.GetAllPropertiesForUserAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
 
             return Ok(response);
         }
@@ -90,17 +80,12 @@ public class PropertiesController : ControllerBase
     [HttpGet]
     [Route("list")]
     [ProducesResponseType(typeof(IEnumerable<PropertyResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetActive()
     {
         try
         {
             var response = await _propertyService.GetPropertiesAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
 
             return Ok(response);
         }

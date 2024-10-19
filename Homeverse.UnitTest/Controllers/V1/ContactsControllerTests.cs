@@ -67,24 +67,6 @@ public class ContactsControllerTests
     }
 
     [Fact]
-    public async Task Get_WhenThereAreNoContactsFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var cacheData = (IEnumerable<ContactResponse>)null;
-        var response = new List<ContactResponse>();
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts")).Returns(cacheData);
-        A.CallTo(() => _contactService.GetContactsAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.Get();
-
-        // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<ContactResponse>>("contacts")).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _contactService.GetContactsAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
-    }
-
-    [Fact]
     public async Task Get_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
