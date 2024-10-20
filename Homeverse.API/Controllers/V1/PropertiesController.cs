@@ -33,13 +33,13 @@ public class PropertiesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<PropertyResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<PropertyDetailResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            var cacheData = await _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties");
+            var cacheData = await _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties");
             if (cacheData != null)
             {
                 return Ok(cacheData);

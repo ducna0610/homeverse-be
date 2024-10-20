@@ -63,16 +63,16 @@ public class PropertyServiceTests
     {
         // Arrange
         var properties = _fixture.CreateMany<Property>(3).ToList();
-        var response = _fixture.CreateMany<PropertyResponse>(3).ToList();
+        var response = _fixture.CreateMany<PropertyDetailResponse>(3).ToList();
         A.CallTo(() => _propertyRepository.GetAllPropertiesAsync()).Returns(properties);
-        A.CallTo(() => _mapper.Map<IEnumerable<PropertyResponse>>(A<IEnumerable<Property>>._)).Returns(response);
+        A.CallTo(() => _mapper.Map<IEnumerable<PropertyDetailResponse>>(A<IEnumerable<Property>>._)).Returns(response);
 
         // Act
         var actual = await _sut.GetAllPropertiesAsync();
 
         // Assert
         A.CallTo(() => _propertyRepository.GetAllPropertiesAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsAssignableFrom<IEnumerable<PropertyResponse>>(actual);
+        Assert.IsAssignableFrom<IEnumerable<PropertyDetailResponse>>(actual);
         Assert.Equal(properties.Count(), actual.Count());
     }
 

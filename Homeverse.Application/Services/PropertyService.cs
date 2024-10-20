@@ -11,7 +11,7 @@ namespace Homeverse.Application.Services;
 public interface IPropertyService
 {
     Task<IEnumerable<PropertyResponse>> GetPropertiesAsync();
-    Task<IEnumerable<PropertyResponse>> GetAllPropertiesAsync();
+    Task<IEnumerable<PropertyDetailResponse>> GetAllPropertiesAsync();
     Task<IEnumerable<PropertyDetailResponse>> GetAllPropertiesForUserAsync();
     Task<PropertyDetailResponse> GetPropertyByIdAsync(int id);
     Task<PropertyResponse> AddPropertyAsync(PropertyRequest request);
@@ -50,11 +50,11 @@ public class PropertyService : IPropertyService
         return _mapper.Map<IEnumerable<PropertyResponse>>(properties);
     }
 
-    public async Task<IEnumerable<PropertyResponse>> GetAllPropertiesAsync()
+    public async Task<IEnumerable<PropertyDetailResponse>> GetAllPropertiesAsync()
     {
         var properties = await _propertyRepository.GetAllPropertiesAsync();
 
-        return _mapper.Map<IEnumerable<PropertyResponse>>(properties);
+        return _mapper.Map<IEnumerable<PropertyDetailResponse>>(properties);
     }
 
     public async Task<IEnumerable<PropertyDetailResponse>> GetAllPropertiesForUserAsync()
