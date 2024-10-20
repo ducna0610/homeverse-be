@@ -70,24 +70,6 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task Get_WhenThereAreNoUsersFound_ShouldReturnStatusCode404NotFound()
-    {
-        // Arrange
-        var cacheData = (IEnumerable<UserResponse>)null;
-        var response = new List<UserResponse>();
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<UserResponse>>("users")).Returns(cacheData);
-        A.CallTo(() => _userService.GetUsersAsync()).Returns(response);
-
-        // Act
-        var actual = await _sut.Get();
-
-        // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<UserResponse>>("users")).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _userService.GetUsersAsync()).MustHaveHappenedOnceExactly();
-        Assert.IsType<NotFoundResult>(actual);
-    }
-
-    [Fact]
     public async Task Get_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange

@@ -37,7 +37,6 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get()
     {
@@ -50,10 +49,6 @@ public class UsersController : ControllerBase
             }
 
             var response = await _userService.GetUsersAsync();
-            if (response.Count() == 0)
-            {
-                return NotFound();
-            }
             await _cacheService.SetDataAsync("users", response);
 
             return Ok(response);
