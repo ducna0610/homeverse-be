@@ -35,16 +35,16 @@ public class PropertiesControllerTests
     public async Task GetAll_WhenThereIsCacheData_ShouldReturnPropertiesWithStatusCode200OK()
     {
         // Arrange
-        var cacheData = _fixture.CreateMany<PropertyResponse>(3).ToList();
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).Returns(cacheData);
+        var cacheData = _fixture.CreateMany<PropertyDetailResponse>(3).ToList();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties")).Returns(cacheData);
 
         // Act
         var actual = await _sut.GetAll();
 
         // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties")).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<OkObjectResult>(actual);
-        var result = Assert.IsAssignableFrom<IEnumerable<PropertyResponse>>(actionResult.Value);
+        var result = Assert.IsAssignableFrom<IEnumerable<PropertyDetailResponse>>(actionResult.Value);
         Assert.Equal(cacheData.Count(), result.Count());
     }
 
@@ -52,20 +52,20 @@ public class PropertiesControllerTests
     public async Task GetAll_WhenThereAreProperties_ShouldReturnPropertiesWithStatusCode200OK()
     {
         // Arrange
-        var cacheData = (IEnumerable<PropertyResponse>)null;
-        var response = _fixture.CreateMany<PropertyResponse>(3).ToList();
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).Returns(cacheData);
+        var cacheData = (IEnumerable<PropertyDetailResponse>)null;
+        var response = _fixture.CreateMany<PropertyDetailResponse>(3).ToList();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties")).Returns(cacheData);
         A.CallTo(() => _propertyService.GetAllPropertiesAsync()).Returns(response);
 
         // Act
         var actual = await _sut.GetAll();
 
         // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _propertyService.GetAllPropertiesAsync()).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _cacheService.SetDataAsync<IEnumerable<PropertyResponse>>("properties", response)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.SetDataAsync<IEnumerable<PropertyDetailResponse>>("properties", response)).MustHaveHappenedOnceExactly();
         var actionResult = Assert.IsType<OkObjectResult>(actual);
-        var result = Assert.IsAssignableFrom<IEnumerable<PropertyResponse>>(actionResult.Value);
+        var result = Assert.IsAssignableFrom<IEnumerable<PropertyDetailResponse>>(actionResult.Value);
         Assert.Equal(response.Count(), result.Count());
     }
 
@@ -73,15 +73,15 @@ public class PropertiesControllerTests
     public async Task GetAll_WhenThereIsUnhandledException_ShouldReturnStatusCode500InternalServerErrorAndLogAnException()
     {
         // Arrange
-        var cacheData = (IEnumerable<PropertyResponse>)null;
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).Returns(cacheData);
+        var cacheData = (IEnumerable<PropertyDetailResponse>)null;
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties")).Returns(cacheData);
         A.CallTo(() => _propertyService.GetAllPropertiesAsync()).Throws<Exception>();
 
         // Act
         var actual = await _sut.GetAll() as StatusCodeResult;
 
         // Assert
-        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyResponse>>("properties")).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _cacheService.GetDataAsync<IEnumerable<PropertyDetailResponse>>("properties")).MustHaveHappenedOnceExactly();
         A.CallTo(() => _propertyService.GetAllPropertiesAsync()).MustHaveHappenedOnceExactly();
         A.CallTo(_logger).Where(
                 call => call.Method.Name == "Log"
