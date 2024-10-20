@@ -20,7 +20,8 @@ public class AutoMapperProfiles : Profile
             .ForMember(d => d.Name, o => o.MapFrom(x => x.UserName))
             .ForMember(d => d.PasswordHash, o => o.MapFrom(x => Convert.FromBase64String("")))
             .ForMember(d => d.PasswordSalt, o => o.MapFrom(x => Convert.FromBase64String("")));
-        CreateMap<User, UserResponse>();
+        CreateMap<User, UserResponse>()
+            .ForMember(d => d.NumberPost, o => o.MapFrom(x => x.Properties.Count()));
         CreateMap<User, FriendResponse>()
             .ForMember(d => d.IsOnline, o => o.MapFrom(x => x.Connections.Any()))
             .ForMember(d => d.MessageUnread, o => o.MapFrom(x => x.MessagesSent.Where(y => !y.IsReaded).Count()));

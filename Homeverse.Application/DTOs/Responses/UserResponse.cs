@@ -8,6 +8,7 @@ public class UserResponse : BaseResponse
     public string Phone { get; set; }
     public string Email { get; set; }
     public RoleEnum Role { get; set; }
+    public int NumberPost { get; set; }
     public bool IsActive { get; set; }
     public bool IsDeleted { get; set; }
 }
