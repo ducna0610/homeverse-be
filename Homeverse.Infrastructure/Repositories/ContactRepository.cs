@@ -16,7 +16,7 @@ public class ContactRepository : IContactRepository
 
     public async Task<IEnumerable<Contact>> GetContactsAsync()
     {
-        return await _context.Contacts.ToListAsync();
+        return await _context.Contacts.OrderByDescending(x => x.CreatedAt).ToListAsync();
     }
 
     public async Task<Contact> GetContactByIdAsync(int id)
