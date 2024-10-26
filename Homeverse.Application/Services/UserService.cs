@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire;
 using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
 using Homeverse.Application.Interfaces;
@@ -40,15 +41,17 @@ public class UserService : IUserService
     private readonly IMailService _mailService;
     private readonly IConfiguration _configuration;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
     public UserService
     (
         IUnitOfWork unitOfWork, 
-        IMapper mapper, 
-        IUserRepository userRepository, 
-        IMailService mailService, 
-        IConfiguration configuration, 
-        ICurrentUserService currentUserService
+        IMapper mapper,
+        IUserRepository userRepository,
+        IMailService mailService,
+        IConfiguration configuration,
+        ICurrentUserService currentUserService,
+        IBackgroundJobClient backgroundJobClient
     )
     {
         _unitOfWork = unitOfWork;
@@ -57,6 +60,7 @@ public class UserService : IUserService
         _mailService = mailService;
         _configuration = configuration;
         _currentUserService = currentUserService;
+        _backgroundJobClient = backgroundJobClient;
     }
 
     public async Task<IEnumerable<UserResponse>> GetUsersAsync()
@@ -103,7 +107,7 @@ public class UserService : IUserService
 <br>
 <a href=""{link}"">Nhấn vào đây để xác minh email</a>
 ";
-        _mailService.SendAsync(user.Email, "Xác minh email", content);
+        _backgroundJobClient.Enqueue(() => _mailService.SendAsync(user.Email, "Xác minh email", content));
 
         return _mapper.Map<UserResponse>(user);
     }
@@ -167,7 +171,7 @@ Mật khẩu phải có đủ 8 kí tự
 <br>
 Form chỉ có thời hạn 24h và chỉ dùng được 1 lần.
 ";
-            _mailService.SendAsync(user.Email, "Đổi mật khẩu", content);
+            _backgroundJobClient.Enqueue(() => _mailService.SendAsync(user.Email, "Đổi mật khẩu", content));
         }
     }
 

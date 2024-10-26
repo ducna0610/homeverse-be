@@ -1,6 +1,9 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using FakeItEasy;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.States;
 using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
 using Homeverse.Application.Interfaces;
@@ -21,6 +24,7 @@ public class UserServiceTests
     private readonly IUserRepository _userRepository;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMailService _mailService;
+    private readonly IBackgroundJobClient _backgroundJobClient;
     private readonly IConfiguration _configuration;
     private readonly IUserService _sut;
 
@@ -35,9 +39,10 @@ public class UserServiceTests
         _mapper = A.Fake<IMapper>();
         _userRepository = A.Fake<IUserRepository>();
         _mailService = A.Fake<IMailService>();
+        _backgroundJobClient = A.Fake<IBackgroundJobClient>();
         _configuration = A.Fake<IConfiguration>();
         _currentUserService = A.Fake<ICurrentUserService>();
-        _sut = new UserService(_unitOfWork, _mapper, _userRepository, _mailService, _configuration, _currentUserService);
+        _sut = new UserService(_unitOfWork, _mapper, _userRepository, _mailService, _configuration, _currentUserService, _backgroundJobClient);
     }
 
     [Fact]
@@ -102,14 +107,16 @@ public class UserServiceTests
         var response = _fixture.Create<UserResponse>();
         A.CallTo(() => _mapper.Map<User>(A<RegisterRequest>._)).Returns(user);
         A.CallTo(() => _mapper.Map<UserResponse>(A<User>._)).Returns(response);
+        A.CallTo(() => _backgroundJobClient.Create(A<Job>._, A<EnqueuedState>._)).Returns("");
 
         // Act
         var actual = await _sut.Register(request);
 
         // Assert
         A.CallTo(() => _userRepository.AddUserAsync(A<User>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _mailService.SendAsync(A<string>._, A<string>._, A<string>._)).MustHaveHappenedOnceExactly();
-        Assert.IsAssignableFrom<UserResponse>(actual);
+        A.CallTo(() => _backgroundJobClient 
+            .Create(A<Job>.That.Matches(job => job.Method.Name == "SendAsync"), A<EnqueuedState>._))
+            .MustHaveHappenedOnceExactly();
     }
 
     [Fact]
@@ -161,7 +168,9 @@ public class UserServiceTests
         // Assert
         A.CallTo(() => _userRepository.GetUserByEmailAsync(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _userRepository.UpdateUserAsync(A<User>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _mailService.SendAsync(A<string>._, A<string>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _backgroundJobClient
+            .Create(A<Job>.That.Matches(job => job.Method.Name == "SendAsync"), A<EnqueuedState>._))
+            .MustHaveHappenedOnceExactly();
     }
 
     [Fact]

@@ -1,9 +1,11 @@
-﻿using Homeverse.Application.Interfaces;
+﻿using Hangfire;
+using Homeverse.Application.Interfaces;
 using Homeverse.Domain.Interfaces;
 using Homeverse.Infrastructure.Data;
 using Homeverse.Infrastructure.Repositories;
 using Homeverse.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +24,19 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPropertyRepository, PropertyRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+
+        services.AddDbContext<HomeverseDbContext>(options =>
+        {
+            options.UseSqlServer(config.GetConnectionString("Database"));
+        });
+
+        services.AddHangfire(configuration =>
+        {
+            configuration.UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(config.GetConnectionString("Database"));
+        });
+        services.AddHangfireServer();
 
         services.AddStackExchangeRedisCache(option =>
         {
