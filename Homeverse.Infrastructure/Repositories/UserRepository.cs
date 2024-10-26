@@ -16,7 +16,7 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        return await _context.Users.Include(x => x.Properties).ToListAsync();
+        return await _context.Users.Include(x => x.Properties).OrderByDescending(x => x.CreatedAt).ToListAsync();
     }
 
     public async Task<User> GetUserByIdAsync(int id)
