@@ -1,10 +1,9 @@
-using Homeverse.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Homeverse.Application;
 using Homeverse.Infrastructure;
 using Asp.Versioning;
 using Homeverse.API.Hubs;
 using Microsoft.OpenApi.Models;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +11,6 @@ builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<HomeverseDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
-    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
@@ -78,6 +71,7 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
+    app.UseHangfireDashboard();
 }
 
 var frontendUrl = builder.Configuration.GetSection("UrlSettings:Frontend").Value;
