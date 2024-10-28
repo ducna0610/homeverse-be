@@ -3,6 +3,8 @@ using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
 using Homeverse.Application.Interfaces;
 using Homeverse.Application.Services;
+using Homeverse.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,6 +13,7 @@ using System.Text;
 
 namespace Homeverse.API.Controllers.V1;
 
+[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
@@ -36,6 +39,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get()
@@ -63,6 +67,7 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -124,6 +129,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -136,6 +142,11 @@ public class UsersController : ControllerBase
             if (user.Id == 0)
             {
                 return Unauthorized("Invalid user name or password");
+            }
+
+            if (user.IsActive == false)
+            {
+                return Unauthorized("Require email verification before login");
             }
 
             var response = new TokenResponse();
@@ -152,6 +163,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -177,6 +189,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("confirm-email")]
+    [AllowAnonymous]
     public async Task<ActionResult> ConfirmEmail(string email, string token)
     {
         try
@@ -200,6 +213,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("forgot-password")]
+    [AllowAnonymous]
     public async Task<ActionResult> ForgotPassword([FromForm] string email)
     {
         try
@@ -222,6 +236,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("reset-password")]
+    [AllowAnonymous]
     public async Task<ActionResult> ResetPassord([FromForm] ResetPasswordRequest request)
     {
         try
@@ -245,6 +260,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     public async Task<ActionResult> Update(int id, UpdateUserRequest request)
     {
         try

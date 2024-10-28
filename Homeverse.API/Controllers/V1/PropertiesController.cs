@@ -3,11 +3,13 @@ using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
 using Homeverse.Application.Interfaces;
 using Homeverse.Application.Services;
+using Homeverse.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Homeverse.API.Controllers.V1;
 
+[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
@@ -33,6 +35,7 @@ public class PropertiesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(IEnumerable<PropertyDetailResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
@@ -79,6 +82,7 @@ public class PropertiesController : ControllerBase
 
     [HttpGet]
     [Route("list")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<PropertyResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetActive()
@@ -99,6 +103,7 @@ public class PropertiesController : ControllerBase
 
     [HttpGet]
     [Route("detail/{id}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PropertyDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -183,7 +188,6 @@ public class PropertiesController : ControllerBase
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
-    [Authorize]
     [HttpPost("set-primary-photo/{propId}/{photoId}")]
     [ProducesResponseType(typeof(PhotoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

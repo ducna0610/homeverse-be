@@ -3,6 +3,8 @@ using Homeverse.Application.DTOs.Requests;
 using Homeverse.Application.DTOs.Responses;
 using Homeverse.Application.Interfaces;
 using Homeverse.Application.Services;
+using Homeverse.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Homeverse.API.Controllers.V1;
@@ -29,6 +31,7 @@ public class ContactsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(IEnumerable<ContactResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get()
@@ -112,6 +115,7 @@ public class ContactsController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(int id)
