@@ -256,6 +256,6 @@ public class UserRepositoryTests
         await context.SaveChangesAsync();
 
         // Assert
-        Assert.Null(await context.Connections.FindAsync(connectionId));
+        Assert.Null(await context.Connections.Where(x => x.ConnectionId == connectionId).FirstOrDefaultAsync());
     }
 }
