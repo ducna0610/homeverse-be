@@ -93,7 +93,7 @@ public class UserRepository : IUserRepository
 
     public async Task DeleteConnectionAsync(string connectionId)
     {
-        var connection = await _context.Connections.FindAsync(connectionId);
+        var connection = await _context.Connections.Where(x => x.ConnectionId == connectionId).FirstOrDefaultAsync();
         _context.Connections.Remove(connection);
     }
 }
