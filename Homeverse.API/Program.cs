@@ -4,6 +4,7 @@ using Asp.Versioning;
 using Homeverse.API.Hubs;
 using Microsoft.OpenApi.Models;
 using Hangfire;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +56,15 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Host.UseSerilog((context, loggerConfiguration) =>
+{
+    loggerConfiguration.WriteTo.Console();
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+});
+
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
