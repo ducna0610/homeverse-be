@@ -4,6 +4,7 @@ using Homeverse.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Homeverse.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeverseDbContext))]
-    partial class HomeverseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241027033833_ModifiedConnectionEntity")]
+    partial class ModifiedConnectionEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

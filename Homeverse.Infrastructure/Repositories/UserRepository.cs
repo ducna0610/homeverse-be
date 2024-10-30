@@ -16,7 +16,7 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        return await _context.Users.Include(x => x.Properties).ToListAsync();
+        return await _context.Users.Include(x => x.Properties).OrderByDescending(x => x.CreatedAt).ToListAsync();
     }
 
     public async Task<User> GetUserByIdAsync(int id)
@@ -93,7 +93,7 @@ public class UserRepository : IUserRepository
 
     public async Task DeleteConnectionAsync(string connectionId)
     {
-        var connection = await _context.Connections.FindAsync(connectionId);
+        var connection = await _context.Connections.Where(x => x.ConnectionId == connectionId).FirstOrDefaultAsync();
         _context.Connections.Remove(connection);
     }
 }

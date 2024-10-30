@@ -1,6 +1,6 @@
 ﻿namespace Homeverse.Domain.Entities;
 
-public class Connection
+public class Connection : BaseEntity
 {
     public int UserId { get; set; }
     public string ConnectionId { get; set; }

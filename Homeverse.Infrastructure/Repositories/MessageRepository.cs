@@ -17,9 +17,9 @@ public class MessageRepository : IMessageRepository
     public async Task<IEnumerable<Message>> GetMessageThreadAsync(int userId, int otherId)
     {
         return await _context.Messages
-            .Include(m => m.Sender)
-            .Include(m => m.Receiver)
-            .Where(m => (m.SenderId == userId && m.ReceiverId == otherId) || (m.SenderId == otherId && m.ReceiverId == userId))
+            .Include(x => x.Sender)
+            .Include(x => x.Receiver)
+            .Where(x => (x.SenderId == userId && x.ReceiverId == otherId) || (x.SenderId == otherId && x.ReceiverId == userId))
             .ToListAsync();
     }
 
@@ -39,8 +39,7 @@ public class MessageRepository : IMessageRepository
     public async Task ReadMessageThreadAsync(int userId, int otherId)
     {
         await _context.Messages
-            //.Where(m => (m.SenderId == otherId && m.ReceiverId == userId) && m.IsReaded == false)
-            //.Select(x => x)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.IsReaded, true));
+            .Where(x => (x.SenderId == otherId && x.ReceiverId == userId) && x.IsReaded == false)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.IsReaded, true));
     }
 }
