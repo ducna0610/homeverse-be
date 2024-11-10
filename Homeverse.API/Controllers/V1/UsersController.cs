@@ -259,6 +259,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut]
+    [Route("{id}")]
     [Authorize(Roles = nameof(RoleEnum.Admin))]
     public async Task<ActionResult> Update(int id, UpdateUserRequest request)
     {

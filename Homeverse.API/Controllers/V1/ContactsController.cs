@@ -122,6 +122,12 @@ public class ContactsController : ControllerBase
     {
         try
         {
+            var contact = await _contactService.GetContactByIdAsync(id);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+
             await _contactService.DeleteContactAsync(id);
             await _cacheService.RemoveDataAsync("contacts");
 
