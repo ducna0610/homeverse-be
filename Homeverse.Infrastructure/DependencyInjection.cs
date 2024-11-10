@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddDbContext<HomeverseDbContext>(options =>
         {
             options.UseSqlServer(config.GetConnectionString("Database"));
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
         services.AddHangfire(configuration =>

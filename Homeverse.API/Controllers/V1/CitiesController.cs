@@ -4,6 +4,8 @@ using Homeverse.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using Homeverse.Application.Interfaces;
+using Homeverse.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Homeverse.API.Controllers.V1;
 
@@ -56,6 +58,7 @@ public class CitiesController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(CityResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -90,6 +93,7 @@ public class CitiesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(CityResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Add(CityRequest request)
@@ -112,6 +116,7 @@ public class CitiesController : ControllerBase
 
     [HttpPut]
     [Route("{id}")]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(typeof(CityResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update(int id, CityRequest request)
@@ -134,6 +139,7 @@ public class CitiesController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Roles = nameof(RoleEnum.Admin))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(int id)

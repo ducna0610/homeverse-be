@@ -141,7 +141,7 @@ public class PropertiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"The method {nameof(PropertyService.AddPropertyAsync)} caused an exception", ex);
+            _logger.LogError($"The method {nameof(PropertyService.AddPropertyAsync)} caused an exception", ex.ToString());
         }
 
         return StatusCode(StatusCodes.Status500InternalServerError);

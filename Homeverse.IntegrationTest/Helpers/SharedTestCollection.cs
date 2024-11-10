@@ -1,4 +1,4 @@
 ﻿namespace Homeverse.IntegrationTest.Helpers;
 
-[CollectionDefinition("IntegrationTests")]
+[CollectionDefinition(nameof(SharedTestCollection))]
 public class SharedTestCollection : ICollectionFixture<CustomWebApplicationFactory>;
